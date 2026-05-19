@@ -36,7 +36,7 @@ export const initSocket = (server) => {
 
   const io = new Server(server, {
     cors: {
-      origin: clientOrigin || true,
+      origin: [clientOrigin, "http://localhost:8080", "http://localhost:3000"],
       methods: ["GET", "POST"],
     },
   });
@@ -87,8 +87,7 @@ export const initSocket = (server) => {
     socket.on("offer", (data) => {
       const { to, offer } = data || {};
       console.log(
-        `Offer received from ${userId} => ${to}. Active sockets: ${
-          onlineUsers.get(to)?.size || 0
+        `Offer received from ${userId} => ${to}. Active sockets: ${onlineUsers.get(to)?.size || 0
         }`,
       );
       const sent = emitToUser(io, to, "offer", {

@@ -19,7 +19,14 @@ const app = express();
 const PORT = Number(process.env.PORT) || 3000;
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: [
+    process.env.IP_ADDRESS_LINK?.replace(/"/g, ""),
+    "http://localhost:8080",
+    "http://localhost:3000",
+  ],
+  credentials: true,
+}));
 
 // ROUTES
 app.use("/api/auth", authRouter);

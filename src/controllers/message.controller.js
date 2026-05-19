@@ -51,18 +51,18 @@ export const getConversations = async (req, res) => {
           convo.userId === userId
             ? convo.messenger
             : await sequelize.models.User.findByPk(convo.userId, {
-                attributes: ["id", "username", "email"],
-              });
+              attributes: ["id", "username", "email"],
+            });
 
         deduped.push({
           conversationId: convo.id,
           updatedAt: convo.updatedAt,
           lastMessage: lastMessage
             ? {
-                content: lastMessage.content,
-                createdAt: lastMessage.createdAt,
-                sender: lastMessage.sender,
-              }
+              content: lastMessage.content,
+              createdAt: lastMessage.createdAt,
+              sender: lastMessage.sender,
+            }
             : null,
           messenger: otherUser,
         });
@@ -88,8 +88,10 @@ export const createConversation = async (req, res) => {
 
     const existingConversation = await Conversation.findOne({
       where: {
-        userId,
-        messengerId,
+        [Op.or]: [
+          { userId, messengerId },
+          { userId: messengerId, messengerId: userId },
+        ],
       },
     });
 
